@@ -1,6 +1,6 @@
 import Commerce from "@chec/commerce.js";
 
-const checPublicKey = process.env.NEXT_APP_CHEC_PUBLIC_KEY;
+const checPublicKey = process.env.NEXT_PUBLIC_APP_CHEC_PUBLIC_KEY;
 const devEnvironment = process.env.NODE_ENV === "development";
 
 if (devEnvironment && !checPublicKey) {

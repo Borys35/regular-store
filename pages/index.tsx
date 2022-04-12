@@ -6,7 +6,9 @@ import type {
   NextPage,
 } from "next";
 import Link from "next/link";
+import Layout from "../components/layout";
 import { commerce } from "../lib/commerce";
+import { useMerchant } from "../providers/merchant-provider";
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
@@ -14,13 +16,9 @@ export const getServerSideProps: GetServerSideProps = async (
   const { data: products } = await commerce.products.list({
     sortBy: "created",
   });
-  const {
-    data: [merchant],
-  } = (await commerce.merchants.about()) as any;
 
   return {
     props: {
-      merchant,
       products,
     },
   };
@@ -31,9 +29,11 @@ interface Props {
   products: Product[];
 }
 
-const Home: NextPage<Props> = ({ merchant, products }) => {
+const Home: NextPage<Props> = ({ products }) => {
+  const { merchant } = useMerchant();
+
   return (
-    <div>
+    <Layout>
       <h1>{merchant.name}</h1>
       <p>{merchant.description}</p>
       <div>
@@ -43,7 +43,7 @@ const Home: NextPage<Props> = ({ merchant, products }) => {
           </Link>
         ))}
       </div>
-    </div>
+    </Layout>
   );
 };
 

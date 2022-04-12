@@ -1,5 +1,6 @@
 import { Product } from "@chec/commerce.js/types/product";
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
+import Layout from "../../components/layout";
 import { commerce } from "../../lib/commerce";
 
 export const getServerSideProps: GetServerSideProps = async (
@@ -16,7 +17,6 @@ export const getServerSideProps: GetServerSideProps = async (
   const product = await commerce.products.retrieve(permalink, {
     type: "permalink",
   });
-  console.log("efdfdf", product);
 
   return {
     props: {
@@ -31,11 +31,11 @@ interface Props {
 
 const Product: NextPage<Props> = ({ product }) => {
   return (
-    <div>
+    <Layout>
       <h1>{product.name}</h1>
       <p>{product.description}</p>
       <p>{product.price.formatted_with_symbol}</p>
-    </div>
+    </Layout>
   );
 };
 
