@@ -6,7 +6,7 @@ const Header: FC = () => {
 
   return (
     <header>
-      <h1>Name: {merchant?.name}</h1>
+      <h1>Name: {merchant.name}</h1>
     </header>
   );
 };

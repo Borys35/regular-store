@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export const merchantSlice = createSlice({
   name: "merchant",
-  initialState: null as Merchant | null,
+  initialState: {} as Merchant,
   reducers: {
     setMerchant: (state, action: PayloadAction<Merchant>) => {
       state = action.payload;

@@ -35,7 +35,7 @@ interface Props {
 const Home: NextPage<Props> = ({ products, categories, merchant }) => {
   return (
     <Layout>
-      <h1>{merchant.name}</h1>
+      <h1 className="text-purple-800">{merchant.name}</h1>
       <p>{merchant.description}</p>
       <div>
         {products.map((product) => (
