@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "@chec/commerce.js": "^2.8.0",
+    "@reduxjs/toolkit": "^1.8.1",
     "@types/chec__commerce.js": "^2.8.5",
     "next": "12.1.4",
     "react": "18.0.0",
-    "react-dom": "18.0.0"
+    "react-dom": "18.0.0",
+    "react-redux": "^7.2.8"
   },
   "devDependencies": {
     "@types/node": "17.0.23",

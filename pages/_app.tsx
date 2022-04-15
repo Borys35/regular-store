@@ -1,11 +1,17 @@
 import type { AppContext, AppProps } from "next/app";
 import App from "next/app";
+import { Provider } from "react-redux";
 import { commerce } from "../lib/commerce";
+import { createStore } from "../store";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { merchant, categories } = pageProps;
-  return <Component {...pageProps} />;
+  return (
+    <Provider store={createStore({ merchant })}>
+      <Component {...pageProps} />
+    </Provider>
+  );
 }
 
 MyApp.getInitialProps = async (ctx: AppContext) => {
