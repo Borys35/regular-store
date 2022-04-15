@@ -1,14 +1,9 @@
 import { FC } from "react";
-import { useMerchant } from "../providers/merchant-provider";
 
 const Footer: FC = () => {
-  const {
-    merchant: { name },
-  } = useMerchant();
-
   return (
     <footer>
-      <h1>{name}</h1>
+      <h1>Name</h1>
       <p>
         &copy; {new Date().getFullYear()}{" "}
         <a

@@ -1,16 +1,11 @@
 import type { AppContext, AppProps } from "next/app";
 import App from "next/app";
 import { commerce } from "../lib/commerce";
-import { MerchantProvider } from "../providers/merchant-provider";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const { merchant } = pageProps;
-  return (
-    <MerchantProvider value={{ merchant }}>
-      <Component {...pageProps} />
-    </MerchantProvider>
-  );
+  const { merchant, categories } = pageProps;
+  return <Component {...pageProps} />;
 }
 
 MyApp.getInitialProps = async (ctx: AppContext) => {
@@ -18,7 +13,9 @@ MyApp.getInitialProps = async (ctx: AppContext) => {
   const {
     data: [merchant],
   } = (await commerce.merchants.about()) as any;
-  return { ...appProps, pageProps: { merchant } };
+  const { data: categories } = await commerce.categories.list();
+
+  return { ...appProps, pageProps: { merchant, categories } };
 };
 
 export default MyApp;

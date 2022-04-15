@@ -8,7 +8,6 @@ import type {
 import Link from "next/link";
 import Layout from "../components/layout";
 import { commerce } from "../lib/commerce";
-import { useMerchant } from "../providers/merchant-provider";
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
@@ -17,9 +16,12 @@ export const getServerSideProps: GetServerSideProps = async (
     sortBy: "created",
   });
 
+  const { data: categories } = await commerce.categories.list();
+
   return {
     props: {
       products,
+      categories,
     },
   };
 };
@@ -27,11 +29,10 @@ export const getServerSideProps: GetServerSideProps = async (
 interface Props {
   merchant: Merchant;
   products: Product[];
+  categories: any;
 }
 
-const Home: NextPage<Props> = ({ products }) => {
-  const { merchant } = useMerchant();
-
+const Home: NextPage<Props> = ({ products, categories, merchant }) => {
   return (
     <Layout>
       <h1>{merchant.name}</h1>
@@ -42,6 +43,7 @@ const Home: NextPage<Props> = ({ products }) => {
             <a>{product.name}</a>
           </Link>
         ))}
+        {JSON.stringify(categories)}
       </div>
     </Layout>
   );
