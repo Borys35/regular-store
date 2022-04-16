@@ -6,8 +6,6 @@ import { useAppSelector } from "../../../hooks/useAppSelector";
 const HeaderNav: FC = () => {
   const categories = useAppSelector((state) => state.categories);
 
-  console.log("FIRST", categories[1]);
-
   return (
     <nav className="flex gap-8">
       {categories.map(({ id, name, slug, children }: any) => (
@@ -24,7 +22,7 @@ const HeaderNav: FC = () => {
             </a>
           </Link>
           {!!children.length && (
-            <ul className="absolute flex flex-col gap-1 top-full translate-y-1 -left-3 px-3 py-2 border-2 border-gray-400 w-max scale-0 origin-top-left transition-transform group-hover:scale-100 bg-background">
+            <ul className="absolute z-10 flex flex-col gap-1 top-full translate-y-1 -left-3 px-3 py-2 border-1 border-accent shadow-md w-max scale-0 origin-top-left transition-transform group-hover:scale-100 bg-background">
               {children.map(({ id, name, slug }: any) => (
                 <li key={id}>
                   <Link href={`/categories/${slug}`} passHref>

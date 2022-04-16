@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { FC } from "react";
 
 interface Props extends React.HTMLAttributes<HTMLHeadingElement> {
@@ -8,7 +9,10 @@ const Heading: FC<Props> = ({ children, level, className, ...props }) => {
   const Component = `h${level}` as const;
 
   return (
-    <Component className="font-bold" {...props}>
+    <Component
+      className={classNames("font-bold leading-relaxed", className)}
+      {...props}
+    >
       {children}
     </Component>
   );

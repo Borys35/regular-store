@@ -13,6 +13,8 @@ body {
   padding: 0;
   margin: 0;
   font-family: "Poppins", sans-serif;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -31,16 +33,14 @@ h4,
 h5,
 h6 {
   font-family: "PT Sans Caption", sans-serif;
-  font-weight: 700;
-  line-height: 1.1;
 }
 
 h1 {
-  font-size: 2.5rem;
+  font-size: 3.5rem;
 }
 
 h2 {
-  font-size: 2rem;
+  font-size: 2.5rem;
 }
 
 h3 {

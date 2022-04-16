@@ -5,17 +5,30 @@ import { FC } from "react";
 interface Props extends React.HTMLAttributes<HTMLElement> {
   to?: string;
   href?: string;
+  toNewPage?: boolean;
 }
 
-const Button: FC<Props> = ({ children, to, href, className, ...props }) => {
+const Button: FC<Props> = ({
+  children,
+  to,
+  href,
+  toNewPage,
+  className,
+  ...props
+}) => {
   const classes = classNames(
     "inline-block",
     "text-white",
-    "bg-blue-500",
-    "px-4",
-    "py-2",
-    "rounded",
-    "hover:bg-blue-600",
+    "bg-primary",
+    "px-8",
+    "py-6",
+    "rounded-xl",
+    "uppercase",
+    "font-bold",
+    "shadow-xl",
+    "transition-all",
+    "hover:brightness-125",
+    "active:brightness-100 active:ring-4",
     className
   );
 
@@ -26,18 +39,26 @@ const Button: FC<Props> = ({ children, to, href, className, ...props }) => {
       </Link>
     );
 
-  if (href)
-    return (
-      <a
-        href={href}
-        className={classes}
-        target="_blank"
-        rel="noreferrer"
-        {...props}
-      >
-        {children}
-      </a>
-    );
+  if (href) {
+    if (toNewPage)
+      return (
+        <a
+          href={href}
+          className={classes}
+          target="_blank"
+          rel="noreferrer"
+          {...props}
+        >
+          {children}
+        </a>
+      );
+    else
+      return (
+        <a href={href} className={classes} {...props}>
+          {children}
+        </a>
+      );
+  }
 
   return (
     <button className={classes} {...props}>

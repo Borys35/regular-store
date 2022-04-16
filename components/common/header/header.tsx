@@ -23,7 +23,7 @@ const Header: FC = () => {
           <FaUser size={20} />
         </div>
       </div>
-      <div className="border-t-2 border-gray-400"></div>
+      <div className="border-t-1 border-accent"></div>
       <div>
         <HeaderNav />
       </div>
