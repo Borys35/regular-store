@@ -5,8 +5,10 @@ import type {
   GetServerSidePropsContext,
   NextPage,
 } from "next";
-import Link from "next/link";
-import Layout from "../components/layout";
+import Button from "../components/atoms/button";
+import Heading from "../components/atoms/heading";
+import Layout from "../components/common/layout";
+import { useAppSelector } from "../hooks/useAppSelector";
 import { commerce } from "../lib/commerce";
 
 export const getServerSideProps: GetServerSideProps = async (
@@ -32,18 +34,29 @@ interface Props {
   categories: any;
 }
 
-const Home: NextPage<Props> = ({ products, categories, merchant }) => {
+const Home: NextPage<Props> = ({ products }) => {
+  const merchant = useAppSelector((state) => state.merchant);
+  const categories = useAppSelector((state) => state.categories);
+
   return (
     <Layout>
-      <h1 className="text-purple-800">{merchant.name}</h1>
+      <Heading level={1}>{merchant.name}</Heading>
       <p>{merchant.description}</p>
       <div>
-        {products.map((product) => (
-          <Link key={product.id} href={`/products/${product.permalink}`}>
-            <a>{product.name}</a>
-          </Link>
-        ))}
-        {JSON.stringify(categories)}
+        <div>
+          {products.map((product) => (
+            <Button key={product.id} to={`/products/${product.permalink}`}>
+              {product.name}
+            </Button>
+          ))}
+        </div>
+        <div>
+          {categories.map((category) => (
+            <Button key={category.id} to={`/categories/${category.slug}`}>
+              {category.name}
+            </Button>
+          ))}
+        </div>
       </div>
     </Layout>
   );

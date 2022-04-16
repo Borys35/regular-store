@@ -1,6 +1,6 @@
 import { Product } from "@chec/commerce.js/types/product";
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
-import Layout from "../../components/layout";
+import Layout from "../../components/common/layout";
 import { commerce } from "../../lib/commerce";
 
 export const getServerSideProps: GetServerSideProps = async (

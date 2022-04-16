@@ -8,7 +8,7 @@ import "../styles/globals.css";
 function MyApp({ Component, pageProps }: AppProps) {
   const { merchant, categories } = pageProps;
   return (
-    <Provider store={createStore({ merchant })}>
+    <Provider store={createStore({ merchant, categories })}>
       <Component {...pageProps} />
     </Provider>
   );
