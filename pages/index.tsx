@@ -9,6 +9,8 @@ import Image from "next/image";
 import Button from "../components/atoms/button";
 import Heading from "../components/atoms/heading";
 import Layout from "../components/common/layout";
+import ProductCard from "../components/organisms/product-card";
+import ProductGrid from "../components/organisms/product-grid";
 import { useAppSelector } from "../hooks/useAppSelector";
 import { commerce } from "../lib/commerce";
 
@@ -69,11 +71,10 @@ const Home: NextPage<Props> = ({ products }) => {
       <div id="discounts">
         <div>
           {products.map((product) => (
-            <Button key={product.id} to={`/products/${product.permalink}`}>
-              {product.name}
-            </Button>
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
+        <ProductGrid products={products} />
         <div>
           {categories.map((category) => (
             <Button key={category.id} to={`/categories/${category.slug}`}>
