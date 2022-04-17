@@ -9,10 +9,7 @@ const Heading: FC<Props> = ({ children, level, className, ...props }) => {
   const Component = `h${level}` as const;
 
   return (
-    <Component
-      className={classNames("font-bold leading-relaxed", className)}
-      {...props}
-    >
+    <Component className={classNames("font-bold", className)} {...props}>
       {children}
     </Component>
   );
