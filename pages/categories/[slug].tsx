@@ -3,6 +3,7 @@ import { Product } from "@chec/commerce.js/types/product";
 import { GetServerSideProps, NextPage } from "next";
 import Heading from "../../components/atoms/heading";
 import Layout from "../../components/common/layout";
+import ProductGrid from "../../components/organisms/product-grid";
 import { commerce } from "../../lib/commerce";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -33,18 +34,11 @@ const Category: NextPage<Props> = ({ category, products }) => {
       <Heading level={1} className="mb-4">
         {category.name}
       </Heading>
-      {products.length ? (
-        <section>
-          {products.map((product) => (
-            <div key={product.id}>
-              <h2>{product.name}</h2>
-              <p>{product.description}</p>
-            </div>
-          ))}
-        </section>
-      ) : (
-        "No products"
-      )}
+      <div
+        className="text-lg mb-8"
+        dangerouslySetInnerHTML={{ __html: category.description }}
+      ></div>
+      <ProductGrid products={products} />
     </Layout>
   );
 };
