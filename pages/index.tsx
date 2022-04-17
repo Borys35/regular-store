@@ -62,7 +62,9 @@ const Home: NextPage<Props> = ({ products }) => {
             <br />
             experience
           </Heading>
-          <Button href="#new-arrivals">Check out</Button>
+          <Button href="#new-arrivals" variant="primary" size="lg">
+            Check out
+          </Button>
         </section>
         <section id="new-arrivals">
           <Heading level={2} className="mb-4">

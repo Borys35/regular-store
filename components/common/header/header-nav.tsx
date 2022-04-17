@@ -22,7 +22,7 @@ const HeaderNav: FC = () => {
             </a>
           </Link>
           {!!children.length && (
-            <ul className="absolute z-10 flex flex-col gap-1 top-full translate-y-1 -left-3 px-3 py-2 border-1 border-accent shadow-md w-max scale-0 origin-top-left transition-transform group-hover:scale-100 bg-background">
+            <ul className="absolute rounded z-10 flex flex-col gap-1 top-full translate-y-1 -left-3 px-3 py-2 border-1 border-accent shadow-md w-max scale-0 origin-top-left transition-transform group-hover:scale-100 bg-background">
               {children.map(({ id, name, slug }: any) => (
                 <li key={id}>
                   <Link href={`/categories/${slug}`} passHref>

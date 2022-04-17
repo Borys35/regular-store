@@ -6,6 +6,8 @@ interface Props extends React.HTMLAttributes<HTMLElement> {
   to?: string;
   href?: string;
   toNewPage?: boolean;
+  size?: "sm" | "md" | "lg";
+  variant?: "primary" | "secondary";
 }
 
 const Button: FC<Props> = ({
@@ -13,15 +15,23 @@ const Button: FC<Props> = ({
   to,
   href,
   toNewPage,
+  size = "md",
+  variant = "secondary",
   className,
   ...props
 }) => {
   const classes = classNames(
     "inline-block",
-    "text-white",
-    "bg-primary",
-    "px-8",
-    "py-6",
+    { "text-white": variant === "primary" },
+    { "text-black": variant === "secondary" },
+    { "bg-primary": variant === "primary" },
+    { "bg-white": variant === "secondary" },
+    { "px-8": size === "lg" },
+    { "py-6": size === "lg" },
+    { "px-6": size === "md" },
+    { "py-4": size === "md" },
+    { "px-4": size === "sm" },
+    { "py-2": size === "sm" },
     "rounded-xl",
     "uppercase",
     "font-bold",
