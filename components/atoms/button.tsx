@@ -39,6 +39,7 @@ const Button: FC<Props> = ({
     "transition-all",
     "hover:brightness-125",
     "active:brightness-100 active:ring-4",
+    "tracking-wide",
     className
   );
 

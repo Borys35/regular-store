@@ -9,6 +9,7 @@ import Image from "next/image";
 import Button from "../components/atoms/button";
 import Heading from "../components/atoms/heading";
 import Layout from "../components/common/layout";
+import ProductCard from "../components/organisms/product-card";
 import ProductGrid from "../components/organisms/product-grid";
 import { useAppSelector } from "../hooks/useAppSelector";
 import { commerce } from "../lib/commerce";
@@ -62,9 +63,22 @@ const Home: NextPage<Props> = ({ products }) => {
             <br />
             experience
           </Heading>
-          <Button href="#new-arrivals" variant="primary" size="lg">
-            Check out
+          <Button href="#recommended" variant="primary" size="lg">
+            Dive into this
           </Button>
+        </section>
+        <section
+          id="recommended"
+          className="rounded-2xl bg-white shadow-xl px-16 py-12 grid grid-cols-3"
+        >
+          <Heading level={2} className="pt-16">
+            We think everybody should try it!
+          </Heading>
+          <div className="relative col-start-2 col-end-4">
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-0">
+              <ProductCard product={products[1]} size="lg" />
+            </div>
+          </div>
         </section>
         <section id="new-arrivals">
           <Heading level={2} className="mb-4">
@@ -94,7 +108,7 @@ const Home: NextPage<Props> = ({ products }) => {
           <p className="text-lg mb-8">
             Join to our newsletter to get the best offers first!
           </p>
-          <Button>Subscribe</Button>
+          <Button variant="primary">Subscribe</Button>
         </section>
       </div>
     </Layout>

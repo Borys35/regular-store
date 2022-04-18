@@ -87,12 +87,14 @@ const Product: NextPage<Props> = ({ product }) => {
           </Heading>
           <div dangerouslySetInnerHTML={{ __html: description }}></div>
         </section>
-        <section>
-          <Heading level={2} className="mb-4">
-            Related Products
-          </Heading>
-          <ProductGrid products={related_products} />
-        </section>
+        {!!related_products.length && (
+          <section>
+            <Heading level={2} className="mb-4">
+              Related Products
+            </Heading>
+            <ProductGrid products={related_products} size="sm" />
+          </section>
+        )}
       </div>
     </Layout>
   );

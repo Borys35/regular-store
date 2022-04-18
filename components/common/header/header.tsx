@@ -18,9 +18,9 @@ const Header: FC = () => {
           </Link>
         </Heading>
         <HeaderSearch />
-        <div className="flex gap-4">
-          <FaShoppingCart size={20} />
-          <FaUser size={20} />
+        <div className="flex gap-6">
+          <FaShoppingCart size={24} className="fill-gray-600" />
+          <FaUser size={24} className="fill-gray-600" />
         </div>
       </div>
       <div className="border-t-1 border-accent"></div>
