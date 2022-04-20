@@ -34,12 +34,10 @@ export const getServerSideProps: GetServerSideProps = async (
 interface Props {
   merchant: Merchant;
   products: Product[];
-  categories: any;
 }
 
 const Home: NextPage<Props> = ({ products }) => {
   const merchant = useAppSelector((state) => state.merchant) as any;
-  const categories = useAppSelector((state) => state.categories);
 
   return (
     <Layout>

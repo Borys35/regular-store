@@ -3,18 +3,22 @@ import {
   PreloadedState,
   StateFromReducersMapObject,
 } from "@reduxjs/toolkit";
+import { cartApi } from "./apis/cart";
 import categoriesReducer from "./slices/categories-slice";
 import merchantReducer from "./slices/merchant-slice";
 
 const reducer = {
   merchant: merchantReducer,
   categories: categoriesReducer,
+  [cartApi.reducerPath]: cartApi.reducer,
 };
 
 export const createStore = (preloadedState: PreloadedState<RootState>) => {
   return configureStore({
     preloadedState,
     reducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(cartApi.middleware),
   });
 };
 
