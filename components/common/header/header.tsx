@@ -43,15 +43,24 @@ const Header: FC = () => {
                 className={`hidden absolute top-full text-center
                             translate-y-1 px-3 pt-2 pb-4 border-1 border-accent 
                             rounded bg-white w-80 z-20
-                            md:flex flex-col gap-2 transition-transform origin-top-right
+                            md:flex flex-col gap-4 transition-transform origin-top-right
                             shadow-md right-0 scale-0 group-hover:scale-100`}
               >
-                <Heading level={3}>Cart</Heading>
-                <div className="flex flex-col gap-2 mb-2">
+                <Heading level={3} className="py-4">
+                  Cart
+                </Heading>
+                <div className="flex flex-col gap-4 mb-2">
                   {cart.line_items.map((lineItem) => (
                     <CartItem key={lineItem.id} item={lineItem} />
                   ))}
                 </div>
+                <span className="border-t-1 border-accent"></span>
+                <p className="text-left text-lg">
+                  Total:{" "}
+                  <span className="font-bold">
+                    {cart.subtotal.formatted_with_symbol}
+                  </span>
+                </p>
                 <Button variant="primary" to="/cart">
                   Cart
                 </Button>
