@@ -14,6 +14,7 @@ const Footer: FC = () => {
           href="https://www.github.com/Borys35"
           target="_blank"
           rel="noreferrer"
+          className="underline"
         >
           Borys Kaczmarek
         </a>
