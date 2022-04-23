@@ -9,10 +9,7 @@ import Layout from "../../components/common/layout";
 import ProductGrid from "../../components/organisms/product-grid";
 import { commerce } from "../../lib/commerce";
 import noImage from "../../public/no-photo.png";
-import {
-  useAddProductMutation,
-  useRetrieveCartQuery,
-} from "../../store/apis/cart";
+import { useAddProductMutation } from "../../store/apis/cart";
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
@@ -44,7 +41,6 @@ const Product: NextPage<Props> = ({ product }) => {
   const [assetIndex, setAssetIndex] = useState(0);
   const { id, name, description, price, assets, related_products } = product;
   const [addProduct] = useAddProductMutation();
-  const { data } = useRetrieveCartQuery();
 
   async function handleAddToCart() {
     await addProduct(id);
