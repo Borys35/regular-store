@@ -50,9 +50,13 @@ const Header: FC = () => {
                   Cart
                 </Heading>
                 <div className="flex flex-col gap-4 mb-2">
-                  {cart.line_items.map((lineItem) => (
-                    <CartItem key={lineItem.id} item={lineItem} />
-                  ))}
+                  {cart.line_items.length ? (
+                    cart.line_items.map((lineItem) => (
+                      <CartItem key={lineItem.id} item={lineItem} />
+                    ))
+                  ) : (
+                    <p>Cart is empty 😕</p>
+                  )}
                 </div>
                 <span className="border-t-1 border-accent"></span>
                 <p className="text-left text-lg">

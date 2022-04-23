@@ -54,7 +54,6 @@ const Product: NextPage<Props> = ({ product }) => {
     <Layout>
       <div className="flex flex-col gap-16">
         <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {data?.total_items}
           <div className="flex">
             {assets.length ? (
               <>

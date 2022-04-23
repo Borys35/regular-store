@@ -8,6 +8,7 @@ interface Props extends React.HTMLAttributes<HTMLElement> {
   toNewPage?: boolean;
   size?: "sm" | "md" | "lg";
   variant?: "primary" | "secondary";
+  disabled?: boolean;
 }
 
 const Button: FC<Props> = ({
@@ -18,6 +19,7 @@ const Button: FC<Props> = ({
   size = "md",
   variant = "secondary",
   className,
+  disabled = false,
   ...props
 }) => {
   const classes = classNames(
@@ -37,9 +39,12 @@ const Button: FC<Props> = ({
     "font-bold",
     "shadow-xl",
     "transition-all",
-    "hover:brightness-125",
-    "active:brightness-100 active:ring-4",
+    { "hover:brightness-125": !disabled },
+    { "active:brightness-100 active:ring-4": !disabled },
     "tracking-wide",
+    { "cursor-pointer": !disabled },
+    { "cursor-default": disabled },
+    { "opacity-50": disabled },
     className
   );
 
