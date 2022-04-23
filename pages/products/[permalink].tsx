@@ -39,11 +39,24 @@ interface Props {
 
 const Product: NextPage<Props> = ({ product }) => {
   const [assetIndex, setAssetIndex] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const { id, name, description, price, assets, related_products } = product;
   const [addProduct] = useAddProductMutation();
 
   async function handleAddToCart() {
-    await addProduct(id);
+    await addProduct({ id, quantity });
+  }
+
+  function handleChangeQuantity(e: any) {
+    const { value } = e.target;
+    setQuantity(parseInt(value, 10));
+  }
+
+  function handleBlur(e: any) {
+    const { value } = e.target;
+    let q = parseInt(value, 10);
+    if (isNaN(q) || q <= 0) q = 1;
+    setQuantity(q);
   }
 
   return (
@@ -89,7 +102,13 @@ const Product: NextPage<Props> = ({ product }) => {
               {price.formatted_with_symbol}
             </p>
             <div className="flex gap-4">
-              <Input type="number" className="w-20" />
+              <Input
+                type="number"
+                className="w-20"
+                value={quantity}
+                onChange={handleChangeQuantity}
+                onBlur={handleBlur}
+              />
               <Button onClick={handleAddToCart}>Add to Cart</Button>
               <Button variant="primary">Buy now</Button>
             </div>

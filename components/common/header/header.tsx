@@ -36,7 +36,7 @@ const Header: FC = () => {
                   </a>
                 </Link>
               )}
-              counter={cart?.total_unique_items}
+              counter={cart?.total_items}
             />
             {cart && (
               <div
