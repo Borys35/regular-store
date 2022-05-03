@@ -29,14 +29,16 @@ interface Props {
 }
 
 const Category: NextPage<Props> = ({ category, products }) => {
+  const { name, description } = category;
+
   return (
-    <Layout>
+    <Layout name={name}>
       <Heading level={1} className="mb-4">
-        {category.name}
+        {name}
       </Heading>
       <div
         className="text-lg mb-8"
-        dangerouslySetInnerHTML={{ __html: category.description }}
+        dangerouslySetInnerHTML={{ __html: description }}
       ></div>
       <ProductGrid products={products} />
     </Layout>

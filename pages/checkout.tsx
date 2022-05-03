@@ -83,7 +83,7 @@ const Checkout: NextPage = () => {
   }
 
   return (
-    <Layout>
+    <Layout name="Checkout">
       <h1 className="mb-14 text-center">Checkout (step {step})</h1>
       <div>
         {step === 1 && (

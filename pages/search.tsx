@@ -27,7 +27,7 @@ interface Props {
 
 const Search: NextPage<Props> = ({ q, products }) => {
   return (
-    <Layout>
+    <Layout name={`Searching "q"`}>
       <Heading level={1} className="mb-4">
         Searching for <span className="text-secondary">&quot;{q}&quot;</span>
       </Heading>

@@ -60,7 +60,7 @@ const Product: NextPage<Props> = ({ product }) => {
   }
 
   return (
-    <Layout>
+    <Layout name={name}>
       <div className="flex flex-col gap-16">
         <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="flex">

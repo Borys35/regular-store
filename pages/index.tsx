@@ -40,7 +40,7 @@ const Home: NextPage<Props> = ({ products }) => {
   const merchant = useAppSelector((state) => state.merchant) as any;
 
   return (
-    <Layout>
+    <Layout name="Home">
       <div className="flex flex-col gap-24">
         <section id="hero" className="relative py-4">
           {merchant.has.cover && (

@@ -13,7 +13,7 @@ const Cart: NextPage = () => {
   const isCartEmpty = cart?.line_items.length === 0;
 
   return (
-    <Layout>
+    <Layout name="Cart">
       {cart ? (
         <div className="grid grid-cols-4 gap-4 items-start">
           <div className="bg-white rounded p-6 col-start-1 col-end-4 flex flex-col gap-6 mb-2 shadow-xl">
