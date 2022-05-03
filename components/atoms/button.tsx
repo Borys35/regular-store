@@ -25,20 +25,22 @@ const Button: FC<Props> = ({
   const classes = classNames(
     "inline-block",
     { "text-white": variant === "primary" },
-    { "text-black": variant === "secondary" },
+    { "text-primary": variant === "secondary" },
     { "bg-primary": variant === "primary" },
     { "bg-white": variant === "secondary" },
+    { "border-2 border-primary": variant === "secondary" },
     { "px-8": size === "lg" },
     { "py-6": size === "lg" },
     { "px-6": size === "md" },
     { "py-4": size === "md" },
     { "px-4": size === "sm" },
     { "py-2": size === "sm" },
-    "rounded-xl",
+    "rounded-2xl",
     "uppercase",
     "font-bold",
     "shadow-xl",
     "transition-all",
+    "text-center",
     { "hover:brightness-125": !disabled },
     { "active:brightness-100 active:ring-4": !disabled },
     "tracking-wide",
@@ -79,6 +81,7 @@ const Button: FC<Props> = ({
   return (
     <button className={classes} {...props}>
       {children}
+      {/* <FaSpinner className="animate-spin" /> */}
     </button>
   );
 };
