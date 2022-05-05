@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import Link from "next/link";
 import { FC } from "react";
+import { FaSpinner } from "react-icons/fa";
 
 interface Props extends React.HTMLAttributes<HTMLElement> {
   to?: string;
@@ -9,6 +10,7 @@ interface Props extends React.HTMLAttributes<HTMLElement> {
   size?: "sm" | "md" | "lg";
   variant?: "primary" | "secondary";
   disabled?: boolean;
+  loading?: boolean;
 }
 
 const Button: FC<Props> = ({
@@ -20,6 +22,7 @@ const Button: FC<Props> = ({
   variant = "secondary",
   className,
   disabled = false,
+  loading = false,
   ...props
 }) => {
   const classes = classNames(
@@ -41,8 +44,8 @@ const Button: FC<Props> = ({
     "shadow-xl",
     "transition-all",
     "text-center",
-    { "hover:brightness-125": !disabled },
-    { "active:brightness-100 active:ring-4": !disabled },
+    { "hover:brightness-125": !disabled || !loading },
+    { "active:brightness-100 active:ring-4": !disabled || !loading },
     "tracking-wide",
     { "cursor-pointer": !disabled },
     { "cursor-default": disabled },
@@ -50,10 +53,12 @@ const Button: FC<Props> = ({
     className
   );
 
+  const content = loading ? <FaSpinner className="animate-spin" /> : children;
+
   if (to)
     return (
       <Link href={to} {...props}>
-        <a className={classes}>{children}</a>
+        <a className={classes}>{content}</a>
       </Link>
     );
 
@@ -67,21 +72,20 @@ const Button: FC<Props> = ({
           rel="noreferrer"
           {...props}
         >
-          {children}
+          {content}
         </a>
       );
     else
       return (
         <a href={href} className={classes} {...props}>
-          {children}
+          {content}
         </a>
       );
   }
 
   return (
-    <button className={classes} {...props}>
-      {children}
-      {/* <FaSpinner className="animate-spin" /> */}
+    <button className={classes} disabled={disabled || loading} {...props}>
+      {content}
     </button>
   );
 };

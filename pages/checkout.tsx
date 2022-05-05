@@ -1,7 +1,7 @@
 import { CheckoutCapture } from "@chec/commerce.js/types/checkout-capture";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useReducer, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import Button from "../components/atoms/button";
 import CustomerDetails from "../components/checkout/customer-details";
 import ShippingBillingDetails from "../components/checkout/shipping-billing-details";
@@ -50,9 +50,6 @@ const initialState = {
       postal_zip_code: "94103",
     },
   },
-  fulfillment: {
-    shipping_method: "",
-  },
 } as CheckoutCapture;
 
 type StepType = 1 | 2 | 3;
@@ -81,6 +78,10 @@ const Checkout: NextPage = () => {
   function changeStep(step: StepType) {
     setStep(step);
   }
+
+  const handleShippingMethodSubmit = useCallback((id: string) => {
+    dispatch({ type: CheckoutActionTypes.SHIPPING_METHOD, payload: id as any });
+  }, []);
 
   return (
     <Layout name="Checkout">
@@ -116,12 +117,8 @@ const Checkout: NextPage = () => {
               changeStep(3);
             }}
             onBack={() => changeStep(1)}
-            onShippingMethodSubmit={(id: string) => {
-              dispatch({
-                type: CheckoutActionTypes.SHIPPING_METHOD,
-                payload: id as any,
-              });
-            }}
+            shippingMethodId={state.fulfillment?.shipping_method}
+            onShippingMethodSubmit={handleShippingMethodSubmit}
           />
         )}
         {step === 3 && <Button onClick={captureOrder}>Capture order</Button>}

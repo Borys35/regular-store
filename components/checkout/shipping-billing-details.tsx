@@ -1,3 +1,4 @@
+import { GetShippingOptionsResponse } from "@chec/commerce.js/features/checkout";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FC, useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -7,6 +8,7 @@ import Button from "../atoms/button";
 import Field from "../atoms/field";
 import Heading from "../atoms/heading";
 import Input from "../atoms/input";
+import Radio from "../atoms/radio";
 import Select from "../atoms/select";
 import CheckoutForm from "./checkout-form";
 
@@ -14,10 +16,11 @@ interface Props {
   checkoutId: string | null;
   onSubmit: (data: any) => void;
   onBack: () => void;
+  shippingMethodId?: string;
   onShippingMethodSubmit: (id: string) => void;
 }
 
-const formSchema = yup.object({
+const formSchema = yup.object().shape({
   name: yup.string().required("Full name is required"),
   street: yup.string().required("Street is required"),
   street2: yup.string().optional(),
@@ -27,27 +30,30 @@ const formSchema = yup.object({
   county_state: yup.string().required("County/State is required"),
 });
 
-const schema = yup.object({
+const schema = yup.object().shape({
   shipping: formSchema,
   billing: formSchema.default(undefined),
 });
+
+type SelectType = { [name: string]: string } | null;
 
 const ShippingBillingDetails: FC<Props> = ({
   checkoutId,
   onSubmit,
   onBack,
+  shippingMethodId,
   onShippingMethodSubmit,
 }) => {
   const [same, setSame] = useState(true);
-  const [countries, setCountries] = useState<{ [name: string]: string } | null>(
-    null
-  );
-  const [subdivisions, setSubdivisions] = useState<{
-    [name: string]: string;
-  } | null>(null);
+  const [shippingCountries, setShippingCountries] = useState<SelectType>(null);
+  const [shippingSubdivisions, setShippingSubdivisions] =
+    useState<SelectType>(null);
+  const [allCountries, setAllCountries] = useState<SelectType>(null);
+  const [allSubdivisions, setAllSubdivisions] = useState<SelectType>(null);
+  const [shippingOptions, setShippingOptions] =
+    useState<GetShippingOptionsResponse[]>();
   const {
     register,
-    unregister,
     handleSubmit,
     formState: { errors },
     setValue,
@@ -64,7 +70,7 @@ const ShippingBillingDetails: FC<Props> = ({
     const { countries } = await commerce.services.localeListShippingCountries(
       checkoutId
     );
-    setCountries(countries);
+    setShippingCountries(countries);
   }, [checkoutId]);
 
   const receiveSubdivisions = useCallback(
@@ -76,36 +82,129 @@ const ShippingBillingDetails: FC<Props> = ({
           checkoutId,
           countryCode
         );
-      setSubdivisions(subdivisions);
+      setShippingSubdivisions(subdivisions);
     },
     [checkoutId]
   );
   // #endregion
 
-  const country = watch("shipping.country");
-  const subdivision = watch("shipping.subdivision");
+  useEffect(() => {
+    (async () => {
+      const { countries } = await commerce.services.localeListCountries();
+      setAllCountries(countries);
+    })();
+  }, []);
+
+  const billingCountry = watch("billing.country");
+  useEffect(() => {
+    if (same) return;
+
+    (async () => {
+      setValue("billing.county_state", undefined);
+      setAllSubdivisions(null);
+      if (!billingCountry) return;
+
+      const { subdivisions } = await commerce.services.localeListSubdivisions(
+        billingCountry
+      );
+      setAllSubdivisions(subdivisions);
+    })();
+  }, [same, billingCountry, setValue]);
+
+  const shippingCountry = watch("shipping.country");
+  const shippingSubdivision = watch("shipping.subdivision");
   useEffect(() => {
     setValue("shipping.county_state", "");
-    setSubdivisions(null);
-    if (!country) return;
+    setShippingSubdivisions(null);
+    if (!shippingCountry) return;
 
-    receiveSubdivisions(country);
-  }, [country, receiveSubdivisions, setValue]);
+    receiveSubdivisions(shippingCountry);
+  }, [shippingCountry, receiveSubdivisions, setValue]);
 
   useEffect(() => {
     receiveCountries();
   }, [receiveCountries]);
 
   useEffect(() => {
-    if (!checkoutId || !country) return;
+    setShippingOptions(undefined);
+    if (!checkoutId || !shippingCountry) return;
     (async () => {
-      const [{ id }] = await commerce.checkout.getShippingOptions(checkoutId, {
-        country,
-        region: subdivision,
+      const options = await commerce.checkout.getShippingOptions(checkoutId, {
+        country: shippingCountry,
+        region: shippingSubdivision,
       });
-      onShippingMethodSubmit(id);
+      setShippingOptions(options);
+      if (options.length) onShippingMethodSubmit(options[0].id);
     })();
-  }, [checkoutId, country, subdivision, onShippingMethodSubmit]);
+  }, [
+    checkoutId,
+    shippingCountry,
+    shippingSubdivision,
+    onShippingMethodSubmit,
+  ]);
+
+  console.log(errors);
+
+  function renderFormFields(
+    name: string,
+    countries: SelectType,
+    subdivisions: SelectType
+  ) {
+    return (
+      <>
+        <Field label="Full name" error={errors[name] && errors[name].name}>
+          <Input {...register(`${name}.name`)} />
+        </Field>
+        <Field label="Street" error={errors[name] && errors[name].street}>
+          <Input {...register(`${name}.street`)} />
+        </Field>
+        <Field label="Street 2" error={errors[name] && errors[name].street_2}>
+          <Input {...register(`${name}.street_2`)} />
+        </Field>
+        <Field label="Town/City" error={errors[name] && errors[name].town_city}>
+          <Input {...register(`${name}.town_city`)} />
+        </Field>
+        <Field
+          label="Postal/Zip code"
+          error={errors[name] && errors[name].postal_zip_code}
+        >
+          <Input {...register(`${name}.postal_zip_code`)} />
+        </Field>
+        <Field label="Country" error={errors[name] && errors[name].country}>
+          <Select {...register(`${name}.country`)}>
+            <option value="">Select country</option>
+            {countries &&
+              Object.keys(countries).map((country) => (
+                <option
+                  key={country}
+                  value={country}
+                  onClick={() => {
+                    setShippingSubdivisions(null);
+                    receiveSubdivisions(country);
+                  }}
+                >
+                  {countries[country]}
+                </option>
+              ))}
+          </Select>
+        </Field>
+        <Field
+          label="County/State"
+          error={errors[name] && errors[name].county_state}
+        >
+          <Select {...register(`${name}.county_state`)}>
+            <option value="">Select county/state</option>
+            {subdivisions &&
+              Object.keys(subdivisions).map((subdivision) => (
+                <option key={subdivision} value={subdivision}>
+                  {subdivisions[subdivision]}
+                </option>
+              ))}
+          </Select>
+        </Field>
+      </>
+    );
+  }
 
   return (
     <div>
@@ -113,71 +212,11 @@ const ShippingBillingDetails: FC<Props> = ({
         <div className="flex flex-col md:flex-row gap-6">
           <div className="flex flex-col gap-6">
             <Heading level={2}>Shipping{same && " and Billing"}</Heading>
-            <Field
-              label="Full name"
-              error={errors.shipping && errors.shipping.name}
-            >
-              <Input {...register("shipping.name")} />
-            </Field>
-            <Field
-              label="Street"
-              error={errors.shipping && errors.shipping.street}
-            >
-              <Input {...register("shipping.street")} />
-            </Field>
-            <Field
-              label="Street 2"
-              error={errors.shipping && errors.shipping.street_2}
-            >
-              <Input {...register("shipping.street_2")} />
-            </Field>
-            <Field
-              label="Town/City"
-              error={errors.shipping && errors.shipping.town_city}
-            >
-              <Input {...register("shipping.town_city")} />
-            </Field>
-            <Field
-              label="Postal/Zip code"
-              error={errors.shipping && errors.shipping.postal_zip_code}
-            >
-              <Input {...register("shipping.postal_zip_code")} />
-            </Field>
-            <Field
-              label="Country"
-              error={errors.shipping && errors.shipping.country}
-            >
-              <Select {...register("shipping.country")}>
-                <option value="">Select country</option>
-                {countries &&
-                  Object.keys(countries).map((country) => (
-                    <option
-                      key={country}
-                      value={country}
-                      onClick={() => {
-                        setSubdivisions(null);
-                        receiveSubdivisions(country);
-                      }}
-                    >
-                      {countries[country]}
-                    </option>
-                  ))}
-              </Select>
-            </Field>
-            <Field
-              label="County/State"
-              error={errors.shipping && errors.shipping.county_state}
-            >
-              <Select {...register("shipping.county_state")}>
-                <option value="">Select county/state</option>
-                {subdivisions &&
-                  Object.keys(subdivisions).map((subdivision) => (
-                    <option key={subdivision} value={subdivision}>
-                      {subdivisions[subdivision]}
-                    </option>
-                  ))}
-              </Select>
-            </Field>
+            {renderFormFields(
+              "shipping",
+              shippingCountries,
+              shippingSubdivisions
+            )}
             <Field label="Billing address same as shipping?">
               <Input
                 type="checkbox"
@@ -189,72 +228,28 @@ const ShippingBillingDetails: FC<Props> = ({
           {!same && (
             <div className="flex flex-col gap-6">
               <Heading level={2}>Billing</Heading>
-              <Field
-                label="Full name"
-                error={errors.billing && errors.billing.name}
-              >
-                <Input {...register("billing.name")} />
-              </Field>
-              <Field
-                label="Street"
-                error={errors.billing && errors.billing.street}
-              >
-                <Input {...register("billing.street")} />
-              </Field>
-              <Field
-                label="Street 2"
-                error={errors.billing && errors.billing.street_2}
-              >
-                <Input {...register("billing.street_2")} />
-              </Field>
-              <Field
-                label="Town/City"
-                error={errors.billing && errors.billing.town_city}
-              >
-                <Input {...register("billing.town_city")} />
-              </Field>
-              <Field
-                label="Zip code"
-                error={errors.billing && errors.billing.postal_zip_code}
-              >
-                <Input {...register("billing.postal_zip_code")} />
-              </Field>
-              <Field
-                label="Country"
-                error={errors.billing && errors.billing.country}
-              >
-                <Select {...register("billing.country")}>
-                  {countries &&
-                    Object.keys(countries).map((country) => (
-                      <option
-                        key={country}
-                        value={country}
-                        onClick={() => {
-                          setSubdivisions(null);
-                          receiveSubdivisions(country);
-                        }}
-                      >
-                        {countries[country]}
-                      </option>
-                    ))}
-                </Select>
-              </Field>
-              <Field
-                label="County/State"
-                error={errors.billing && errors.billing.county_state}
-              >
-                <Select {...register("billing.county_state")}>
-                  {subdivisions &&
-                    Object.keys(subdivisions).map((subdivision) => (
-                      <option key={subdivision} value={subdivision}>
-                        {subdivisions[subdivision]}
-                      </option>
-                    ))}
-                </Select>
-              </Field>
+              {renderFormFields("billing", allCountries, allSubdivisions)}
             </div>
           )}
         </div>
+        {shippingOptions && (
+          <div>
+            <Heading level={2} className="mb-4">
+              Shipping method
+            </Heading>
+            <div className="flex flex-col gap-2">
+              {shippingOptions.map(({ id, description, price }) => (
+                <Radio
+                  key={id}
+                  value={id}
+                  checked={shippingMethodId === id}
+                  onChange={(e) => onShippingMethodSubmit(e.target.value)}
+                  label={`${description} - ${price.formatted_with_symbol}`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
         <div className="flex gap-6">
           <Button
             onClick={(e) => {
