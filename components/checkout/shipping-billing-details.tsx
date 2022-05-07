@@ -143,8 +143,6 @@ const ShippingBillingDetails: FC<Props> = ({
     onShippingMethodSubmit,
   ]);
 
-  console.log(errors);
-
   function renderFormFields(
     name: string,
     countries: SelectType,

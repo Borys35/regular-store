@@ -17,9 +17,7 @@ import { commerce } from "../lib/commerce";
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  const { data: products } = await commerce.products.list({
-    sortBy: "created",
-  });
+  const { data: products } = await commerce.products.list();
 
   const { data: categories } = await commerce.categories.list();
 

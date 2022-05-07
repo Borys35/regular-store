@@ -1,10 +1,13 @@
 import { Product } from "@chec/commerce.js/types/product";
+import { Variant } from "@chec/commerce.js/types/variant";
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
 import Image from "next/image";
 import { useState } from "react";
 import Button from "../../components/atoms/button";
+import Field from "../../components/atoms/field";
 import Heading from "../../components/atoms/heading";
 import Input from "../../components/atoms/input";
+import Select from "../../components/atoms/select";
 import Layout from "../../components/common/layout";
 import ProductGrid from "../../components/organisms/product-grid";
 import { commerce } from "../../lib/commerce";
@@ -38,13 +41,27 @@ interface Props {
 }
 
 const Product: NextPage<Props> = ({ product }) => {
+  const [variant, setVariant] = useState<Variant | null>(null);
   const [assetIndex, setAssetIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const { id, name, description, price, assets, related_products } = product;
+  const {
+    id,
+    name,
+    description,
+    price,
+    assets,
+    related_products,
+    inventory: { managed, available },
+    checkout_url,
+    variant_groups,
+  } = product;
   const [addProduct] = useAddProductMutation();
+  const hasVariants = variant_groups.length > 0;
 
   async function handleAddToCart() {
-    await addProduct({ id, quantity });
+    if (!hasVariants) await addProduct({ id, quantity });
+    else if (variant)
+      await addProduct({ id, quantity, variantData: variant.id });
   }
 
   function handleChangeQuantity(e: any) {
@@ -57,6 +74,16 @@ const Product: NextPage<Props> = ({ product }) => {
     let q = parseInt(value, 10);
     if (isNaN(q) || q <= 0) q = 1;
     setQuantity(q);
+  }
+
+  async function handleChangeOption(e: any) {
+    const { value } = e.target;
+    if (!value) return setVariant(null);
+
+    const {
+      data: [variant],
+    } = await commerce.products.getVariants(id, { option_ids: [value] });
+    setVariant(variant);
   }
 
   return (
@@ -98,19 +125,55 @@ const Product: NextPage<Props> = ({ product }) => {
               {name}
             </Heading>
             <div className="border-t-1 border-accent mb-8"></div>
-            <p className="mb-4 text-xl font-bold">
-              {price.formatted_with_symbol}
-            </p>
-            <div className="flex gap-4">
-              <Input
-                type="number"
-                className="w-20"
-                value={quantity}
-                onChange={handleChangeQuantity}
-                onBlur={handleBlur}
-              />
-              <Button onClick={handleAddToCart}>Add to Cart</Button>
-              <Button variant="primary">Buy now</Button>
+            <div className="flex flex-col gap-4">
+              {hasVariants && (
+                <div className="mb-4">
+                  {variant_groups.map(({ id, name, options }) => (
+                    <Field key={id} label={name}>
+                      <Select onChange={handleChangeOption}>
+                        <option value="">Select {name}</option>
+                        {options.map(({ id, name }) => (
+                          <option key={id} value={id}>
+                            {name}
+                          </option>
+                        ))}
+                      </Select>
+                    </Field>
+                  ))}
+                </div>
+              )}
+              {managed && (
+                <p>
+                  <span className="font-bold">{available}</span> items available
+                </p>
+              )}
+              <p>
+                <span className="text-xl font-bold">
+                  {quantity > 1
+                    ? price.raw * quantity
+                    : price.formatted_with_symbol}
+                </span>
+                {quantity > 1 &&
+                  ` (${quantity} &#215; ${price.formatted_with_symbol})`}
+              </p>
+              <div className="flex gap-4">
+                <Input
+                  type="number"
+                  className="w-20"
+                  value={quantity}
+                  onChange={handleChangeQuantity}
+                  onBlur={handleBlur}
+                />
+                <Button
+                  onClick={handleAddToCart}
+                  disabled={hasVariants && !variant}
+                >
+                  Add to Cart
+                </Button>
+                <Button variant="primary" disabled={hasVariants && !variant}>
+                  Buy now
+                </Button>
+              </div>
             </div>
           </div>
         </section>

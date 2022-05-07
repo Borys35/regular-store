@@ -18,7 +18,8 @@ interface Props {
 }
 
 const CartItem: FC<Props> = ({ item, extended = false }) => {
-  const { id, name, line_total, price, quantity, image, permalink } = item;
+  const { id, name, line_total, price, quantity, image, permalink, variant } =
+    item;
   const [updateCart] = useUpdateCartMutation();
   const [removeFromCart] = useRemoveFromCartMutation();
 
@@ -34,7 +35,9 @@ const CartItem: FC<Props> = ({ item, extended = false }) => {
       <div className="flex-1 flex flex-col gap-1 text-left">
         <Heading level={extended ? 5 : 6}>
           <Link href={`/products/${permalink}`}>
-            <a className="hover:underline">{name}</a>
+            <a className="hover:underline">
+              {name} {variant && "(variant)"}
+            </a>
           </Link>
         </Heading>
         <p className={classNames({ "text-sm": !extended })}>

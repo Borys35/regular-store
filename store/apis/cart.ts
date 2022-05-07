@@ -17,9 +17,12 @@ export const cartApi = createApi({
       },
       providesTags: ["Cart"],
     }),
-    addProduct: builder.mutation<Cart, { id: string; quantity?: number }>({
-      queryFn: async ({ id, quantity }) => {
-        const { cart } = await commerce.cart.add(id, quantity);
+    addProduct: builder.mutation<
+      Cart,
+      { id: string; quantity?: number; variantData?: any }
+    >({
+      queryFn: async ({ id, quantity, variantData }) => {
+        const { cart } = await commerce.cart.add(id, quantity, variantData);
 
         return { data: cart };
       },
