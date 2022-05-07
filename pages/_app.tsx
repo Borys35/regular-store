@@ -2,6 +2,7 @@ import type { AppContext, AppProps } from "next/app";
 import App from "next/app";
 import { Router } from "next/router";
 import NProgress from "nprogress";
+import { Toaster } from "react-hot-toast";
 import { Provider } from "react-redux";
 import { commerce } from "../lib/commerce";
 import { createStore } from "../store";
@@ -18,6 +19,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider store={createStore({ merchant, categories })}>
       <Component {...pageProps} />
+      <Toaster />
     </Provider>
   );
 }

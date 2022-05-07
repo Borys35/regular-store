@@ -47,14 +47,14 @@ const CartItem: FC<Props> = ({ item, extended = false }) => {
         {extended && (
           <div className="flex gap-4 items-center">
             <Button
-              size="sm"
+              size="xs"
               onClick={() => updateCart({ lineId: id, quantity: quantity - 1 })}
             >
               -
             </Button>
             <p>{quantity}</p>
             <Button
-              size="sm"
+              size="xs"
               onClick={() => updateCart({ lineId: id, quantity: quantity + 1 })}
             >
               +

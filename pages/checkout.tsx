@@ -2,6 +2,7 @@ import { CheckoutCapture } from "@chec/commerce.js/types/checkout-capture";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useReducer, useState } from "react";
+import toast from "react-hot-toast";
 import Button from "../components/atoms/button";
 import CustomerDetails from "../components/checkout/customer-details";
 import ShippingBillingDetails from "../components/checkout/shipping-billing-details";
@@ -58,17 +59,41 @@ const Checkout: NextPage = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [step, setStep] = useState<StepType>(1);
   const [checkoutId, setCheckoutId] = useState<string | null>(null);
+  const [validating, setValidating] = useState<boolean>(true);
   const router = useRouter();
 
   useEffect(() => {
     (async () => {
       if (checkoutId) return;
 
+      toast("Validating cart items...");
       const cart = await commerce.cart.retrieve();
       const { id } = await commerce.checkout.generateTokenFrom("cart", cart.id);
+
+      for (const lineItem of cart.line_items) {
+        const { available } = await commerce.checkout.checkQuantity(
+          id,
+          lineItem.id,
+          {
+            amount: lineItem.quantity,
+          }
+        );
+        if (!available) {
+          toast(() => (
+            <span>
+              Sorry, we don&apos;t have enough <strong>{lineItem.name}</strong>{" "}
+              in stock.
+            </span>
+          ));
+          router.push("/cart");
+          return;
+        }
+      }
+
+      setValidating(false);
       setCheckoutId(id);
     })();
-  }, [checkoutId]);
+  }, [checkoutId, router]);
 
   async function captureOrder() {
     if (!checkoutId) return;
@@ -89,6 +114,7 @@ const Checkout: NextPage = () => {
       <div>
         {step === 1 && (
           <CustomerDetails
+            loading={validating}
             state={state}
             onSubmit={(data) => {
               dispatch({ type: CheckoutActionTypes.CUSTOMER, payload: data });
@@ -122,6 +148,10 @@ const Checkout: NextPage = () => {
           />
         )}
         {step === 3 && <Button onClick={captureOrder}>Capture order</Button>}
+        <p className="mt-14 text-sm text-gray-500">
+          Note: At checkout no changes in cart won&apos;t affect items in
+          checkout
+        </p>
       </div>
     </Layout>
   );

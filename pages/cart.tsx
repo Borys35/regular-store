@@ -15,8 +15,8 @@ const Cart: NextPage = () => {
   return (
     <Layout name="Cart">
       {cart ? (
-        <div className="grid grid-cols-4 gap-4 items-start">
-          <div className="bg-white rounded p-6 col-start-1 col-end-4 flex flex-col gap-6 mb-2 shadow-xl">
+        <div className="grid lg:grid-cols-3 gap-4 items-start">
+          <div className="bg-white rounded p-6 col-start-1 lg:col-end-3 flex flex-col gap-6 mb-2 shadow-xl">
             <Heading level={3} className="mb-4">
               Cart ({cart.total_items})
             </Heading>

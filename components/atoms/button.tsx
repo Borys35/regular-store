@@ -7,7 +7,7 @@ interface Props extends React.HTMLAttributes<HTMLElement> {
   to?: string;
   href?: string;
   toNewPage?: boolean;
-  size?: "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg";
   variant?: "primary" | "secondary";
   disabled?: boolean;
   loading?: boolean;
@@ -38,22 +38,33 @@ const Button: FC<Props> = ({
     { "py-4": size === "md" },
     { "px-4": size === "sm" },
     { "py-2": size === "sm" },
+    { "px-2": size === "xs" },
+    { "py-0": size === "xs" },
     "rounded-2xl",
     "uppercase",
     "font-bold",
     "shadow-xl",
     "transition-all",
     "text-center",
-    { "hover:brightness-125 hover:shadow-2xl": !disabled || !loading },
-    { "active:brightness-100 active:ring-4": !disabled || !loading },
+    { "hover:brightness-125 hover:shadow-2xl": !disabled && !loading },
+    { "active:brightness-100 active:ring-4": !disabled && !loading },
     "tracking-wide",
     { "cursor-pointer": !disabled },
-    { "cursor-default": disabled },
+    { "cursor-default": disabled || loading },
     { "opacity-50": disabled },
     className
   );
 
-  const content = loading ? <FaSpinner className="animate-spin" /> : children;
+  const content = loading ? (
+    <div className="relative">
+      <span className="invisible">{children}</span>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <FaSpinner className="animate-spin" size={20} />
+      </div>
+    </div>
+  ) : (
+    children
+  );
 
   if (to)
     return (

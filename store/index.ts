@@ -13,7 +13,9 @@ const reducer = {
   [cartApi.reducerPath]: cartApi.reducer,
 };
 
-export const createStore = (preloadedState: PreloadedState<RootState>) => {
+export const createStore = (
+  preloadedState: PreloadedState<Omit<RootState, "cartApi">>
+) => {
   return configureStore({
     preloadedState,
     reducer,

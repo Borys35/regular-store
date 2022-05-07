@@ -10,6 +10,7 @@ import Input from "../atoms/input";
 import CheckoutForm from "./checkout-form";
 
 interface Props {
+  loading: boolean;
   state: CheckoutCapture;
   onSubmit: (data: any) => void;
 }
@@ -23,7 +24,7 @@ const schema = yup.object({
     .required("E-mail is required"),
 });
 
-const CustomerDetails: FC<Props> = ({ state, onSubmit }) => {
+const CustomerDetails: FC<Props> = ({ loading, state, onSubmit }) => {
   const {
     register,
     handleSubmit,
@@ -53,7 +54,9 @@ const CustomerDetails: FC<Props> = ({ state, onSubmit }) => {
       <Field label="Your e-mail" error={errors.email}>
         <Input {...register("email")} />
       </Field>
-      <Button variant="primary">Submit</Button>
+      <Button variant="primary" loading={loading}>
+        Submit
+      </Button>
     </CheckoutForm>
   );
 };

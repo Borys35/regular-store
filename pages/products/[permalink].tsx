@@ -66,13 +66,15 @@ const Product: NextPage<Props> = ({ product }) => {
 
   function handleChangeQuantity(e: any) {
     const { value } = e.target;
-    setQuantity(parseInt(value, 10));
+    const q = parseInt(value, 10);
+    setQuantity(q);
   }
 
   function handleBlur(e: any) {
     const { value } = e.target;
     let q = parseInt(value, 10);
     if (isNaN(q) || q <= 0) q = 1;
+    if (managed && q > available) return setQuantity(available);
     setQuantity(q);
   }
 
@@ -154,7 +156,7 @@ const Product: NextPage<Props> = ({ product }) => {
                     : price.formatted_with_symbol}
                 </span>
                 {quantity > 1 &&
-                  ` (${quantity} &#215; ${price.formatted_with_symbol})`}
+                  ` (${quantity} × ${price.formatted_with_symbol})`}
               </p>
               <div className="flex gap-4">
                 <Input
@@ -170,7 +172,11 @@ const Product: NextPage<Props> = ({ product }) => {
                 >
                   Add to Cart
                 </Button>
-                <Button variant="primary" disabled={hasVariants && !variant}>
+                <Button
+                  variant="primary"
+                  disabled={hasVariants && !variant}
+                  href={checkout_url.checkout}
+                >
                   Buy now
                 </Button>
               </div>
