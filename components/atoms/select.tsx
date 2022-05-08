@@ -8,7 +8,7 @@ const Select: FC<Props> = forwardRef<HTMLSelectElement, Props>(
     return (
       <select
         className={classNames(
-          "px-4 py-2 rounded-xl shadow-lg placeholder:text-accent border-1 border-accent bg-white",
+          "px-4 py-2 rounded-xl shadow-md placeholder:text-accent bg-white",
           className
         )}
         ref={ref}

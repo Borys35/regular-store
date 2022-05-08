@@ -72,7 +72,7 @@ const Home: NextPage<Props> = ({ products }) => {
           </Heading>
           <div className="relative col-start-2 col-end-4">
             <div className="absolute left-1/2 -translate-x-1/2 bottom-0">
-              <ProductCard product={products[1]} size="lg" />
+              <ProductCard product={products[0]} size="lg" />
             </div>
           </div>
         </section>

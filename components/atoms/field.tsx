@@ -11,10 +11,10 @@ interface Props {
 const Field: FC<Props> = ({ children, label, error, className }) => {
   return (
     <div className={classNames("flex flex-col gap-1", className)}>
-      <label>{label}</label>
+      <label className="text-lg">{label}</label>
       {children}
       {error && (
-        <span className="text-red-600">
+        <span className="text-red-600 bg-background">
           {`>`} {error.message}
         </span>
       )}

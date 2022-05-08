@@ -3,8 +3,8 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import toast from "react-hot-toast";
-import Button from "../components/atoms/button";
 import CustomerDetails from "../components/checkout/customer-details";
+import PaymentDetails from "../components/checkout/payment-details";
 import ShippingBillingDetails from "../components/checkout/shipping-billing-details";
 import Layout from "../components/common/layout";
 import { commerce } from "../lib/commerce";
@@ -15,6 +15,7 @@ enum CheckoutActionTypes {
   BILLING = "BILLING",
   LINE_ITEMS = "LINE_ITEMS",
   SHIPPING_METHOD = "SHIPPING_METHOD",
+  PAYMENT = "PAYMENT",
 }
 
 const reducer = (
@@ -35,23 +36,14 @@ const reducer = (
         ...state,
         fulfillment: { shipping_method: action.payload },
       } as CheckoutCapture;
+    case CheckoutActionTypes.PAYMENT:
+      return { ...state, payment: action.payload } as CheckoutCapture;
     default:
       return state;
   }
 };
 
-const initialState = {
-  payment: {
-    gateway: "test_gateway",
-    card: {
-      number: "4242 4242 4242 4242",
-      expiry_month: "01",
-      expiry_year: "2023",
-      cvc: "123",
-      postal_zip_code: "94103",
-    },
-  },
-} as CheckoutCapture;
+const initialState = {} as CheckoutCapture;
 
 type StepType = 1 | 2 | 3;
 
@@ -60,6 +52,7 @@ const Checkout: NextPage = () => {
   const [step, setStep] = useState<StepType>(1);
   const [checkoutId, setCheckoutId] = useState<string | null>(null);
   const [validating, setValidating] = useState<boolean>(true);
+  const [capturing, setCapturing] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -95,11 +88,6 @@ const Checkout: NextPage = () => {
     })();
   }, [checkoutId, router]);
 
-  async function captureOrder() {
-    if (!checkoutId) return;
-    const {} = await commerce.checkout.capture(checkoutId, state);
-  }
-
   function changeStep(step: StepType) {
     setStep(step);
   }
@@ -107,6 +95,26 @@ const Checkout: NextPage = () => {
   const handleShippingMethodSubmit = useCallback((id: string) => {
     dispatch({ type: CheckoutActionTypes.SHIPPING_METHOD, payload: id as any });
   }, []);
+
+  const handlePaymentSubmit = async (data: any) => {
+    if (!checkoutId) return;
+
+    setCapturing(true);
+    const expiry_month = data.card.expiry_date.slice(0, 2);
+    const expiry_year = "20" + data.card.expiry_date.slice(3, 5);
+    const payload = { ...data };
+    payload.card = { ...payload.card, expiry_month, expiry_year };
+    delete payload.card.expiry_date;
+    dispatch({ type: CheckoutActionTypes.PAYMENT, payload });
+    try {
+      const d = state.payment ? state : { ...state, payment: payload };
+      await commerce.checkout.capture(checkoutId, d);
+      toast(`Thank you! Now we are taking care about your order.`);
+    } catch {
+      toast("Something went wrong. Please try again later.");
+      router.replace("/cart");
+    }
+  };
 
   return (
     <Layout name="Checkout">
@@ -147,7 +155,14 @@ const Checkout: NextPage = () => {
             onShippingMethodSubmit={handleShippingMethodSubmit}
           />
         )}
-        {step === 3 && <Button onClick={captureOrder}>Capture order</Button>}
+        {step === 3 && (
+          <PaymentDetails
+            checkoutId={checkoutId}
+            state={state}
+            onSubmit={handlePaymentSubmit}
+            loading={capturing}
+          />
+        )}
         <p className="mt-14 text-sm text-gray-500">
           Note: At checkout no changes in cart won&apos;t affect items in
           checkout

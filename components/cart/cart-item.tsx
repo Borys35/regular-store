@@ -62,11 +62,13 @@ const CartItem: FC<Props> = ({ item, extended = false }) => {
           </div>
         )}
       </div>
-      <FaTrash
-        onClick={() => removeFromCart(id)}
-        className="text-gray-600 self-center cursor-pointer transition-colors hover:text-red-600"
-        size={16}
-      />
+      {extended && (
+        <FaTrash
+          onClick={() => removeFromCart(id)}
+          className="text-gray-600 self-center cursor-pointer transition-colors hover:text-red-600"
+          size={16}
+        />
+      )}
     </div>
   );
 };

@@ -8,7 +8,7 @@ const Input: FC<Props> = forwardRef<HTMLInputElement, Props>(
     return (
       <input
         className={classNames(
-          "px-4 py-2 rounded-xl shadow-lg placeholder:text-accent border-1 border-accent",
+          "px-4 py-2 rounded-xl shadow-md placeholder:text-accent text-black",
           { "self-start": type === "checkbox" },
           className
         )}
