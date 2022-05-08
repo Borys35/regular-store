@@ -134,9 +134,9 @@ const Product: NextPage<Props> = ({ product }) => {
                     <Field key={id} label={name}>
                       <Select onChange={handleChangeOption}>
                         <option value="">Select {name}</option>
-                        {options.map(({ id, name }) => (
+                        {options.map(({ id, name, price }) => (
                           <option key={id} value={id}>
-                            {name}
+                            {name} (+{price.formatted_with_symbol})
                           </option>
                         ))}
                       </Select>

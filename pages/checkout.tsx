@@ -109,7 +109,8 @@ const Checkout: NextPage = () => {
     try {
       const d = state.payment ? state : { ...state, payment: payload };
       await commerce.checkout.capture(checkoutId, d);
-      toast(`Thank you! Now we are taking care about your order.`);
+      toast(`Thank You! Now we are taking care about your order.`);
+      router.replace("/thank-you");
     } catch {
       toast("Something went wrong. Please try again later.");
       router.replace("/cart");

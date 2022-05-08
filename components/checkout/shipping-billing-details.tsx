@@ -60,7 +60,6 @@ const ShippingBillingDetails: FC<Props> = ({
     watch,
   } = useForm({
     resolver: yupResolver(schema),
-    shouldUnregister: true,
   });
 
   // #region Receiving countries and subdivisions
@@ -70,6 +69,7 @@ const ShippingBillingDetails: FC<Props> = ({
     const { countries } = await commerce.services.localeListShippingCountries(
       checkoutId
     );
+    console.log("LOL", countries);
     setShippingCountries(countries);
   }, [checkoutId]);
 
